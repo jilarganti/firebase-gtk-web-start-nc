@@ -25,17 +25,19 @@ import {
 import firebaseui from 'firebaseui';
 
 // Document elements
-const startRsvpButton = document.getElementById('startRsvp');
-const startGoogleButton = document.getElementById('startGoogle');
-const guestbookContainer = document.getElementById('guestbook-container');
-const form = document.getElementById('leave-message');
-const input = document.getElementById('message');
-const guestbook = document.getElementById('guestbook');
-const numberAttending = document.getElementById('number-attending');
-const rsvpYes = document.getElementById('rsvp-yes');
-const rsvpNo = document.getElementById('rsvp-no');
+//const startRsvpButton = document.getElementById('startRsvp');
+const signUpButton = document.getElementById('signUp');
+const signInButton = document.getElementById('signIn');
+const signOutButton = document.getElementById('signOut');
+//const guestbookContainer = document.getElementById('guestbook-container');
+//const form = document.getElementById('leave-message');
+//const input = document.getElementById('message');
+//const guestbook = document.getElementById('guestbook');
+//const numberAttending = document.getElementById('number-attending');
+//const rsvpYes = document.getElementById('rsvp-yes');
+//const rsvpNo = document.getElementById('rsvp-no');
 
-let rsvpListener = null;
+//let rsvpListener = null;
 let guestbookListener = null;
 
 let db, auth;
@@ -59,6 +61,7 @@ async function main() {
   provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
   provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
 
+  /*
   // FirebaseUI config
   const uiConfig = {
     credentialHelper: firebaseui.auth.CredentialHelper.NONE,
@@ -77,7 +80,8 @@ async function main() {
 
   // Initialize the FirebaseUI widget using Firebase
   const ui = new firebaseui.auth.AuthUI(auth);
-
+*/
+  /*
   // ...
   // Called when the user clicks the RSVP button
   startRsvpButton.addEventListener('click', () => {
@@ -89,10 +93,10 @@ async function main() {
       ui.start('#firebaseui-auth-container', uiConfig);
     }
   });
-
+*/
   // ...
   // Called when the user clicks the RSVP button
-  startGoogleButton.addEventListener('click', () => {
+  signUpButton.addEventListener('click', () => {
     if (auth.currentUser) {
       // User is signed in; allows user to sign out
       signOut(auth);
@@ -124,23 +128,22 @@ async function main() {
       // ...
     });
 
-  // Listen to the current Auth state
+
+  // Обработчик события для отслеживания состояния входа/выхода пользователя
   onAuthStateChanged(auth, (user) => {
+    console.log(user)
     if (user) {
-      startRsvpButton.textContent = 'LOGOUT';
-      // Show guestbook to logged-in users
-      guestbookContainer.style.display = 'block';
-      // Subscribe to the guestbook collection
-      subscribeGuestbook();
+      // Пользователь вошел, скрываем форму входа и отображаем кнопку выхода
+      signInButton.style.display = 'none';
+      signOutButton.style.display = 'block';
     } else {
-      startRsvpButton.textContent = 'RSVP';
-      // Hide guestbook for non-logged-in users
-      guestbookContainer.style.display = 'none';
-      // Unsubscribe from the guestbook collection
-      unsubscribeGuestbook();
+      // Пользователь вышел, скрываем кнопку выхода и отображаем форму входа
+      signInButton.style.display = 'block';
+      signOutButton.style.display = 'none';
     }
   });
 
+  /*
   // Listen to the form submission
   form.addEventListener('submit', async (e) => {
     // Prevent the default form redirect
@@ -197,5 +200,7 @@ async function main() {
       guestbookListener = null;
     }
   }
+
+  */
 }
 main();
