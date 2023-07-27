@@ -1,3 +1,4 @@
+
 // Import stylesheets
 import './style.css';
 // Firebase App (the core Firebase SDK) is always required
@@ -31,7 +32,7 @@ const signInButton = document.getElementById('signIn');
 const signOutButton = document.getElementById('signOut');
 //const guestbookContainer = document.getElementById('guestbook-container');
 //const form = document.getElementById('leave-message');
-//const input = document.getElementById('message');
+const userName = document.getElementById('userName');
 //const guestbook = document.getElementById('guestbook');
 //const numberAttending = document.getElementById('number-attending');
 //const rsvpYes = document.getElementById('rsvp-yes');
@@ -61,45 +62,12 @@ async function main() {
   provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
   provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
 
-  /*
-  // FirebaseUI config
-  const uiConfig = {
-    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
-    signInOptions: [
-      // Email / Password Provider.
-      EmailAuthProvider.PROVIDER_ID,
-    ],
-    callbacks: {
-      signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-        // Handle sign-in.
-        // Return false to avoid redirect.
-        return false;
-      },
-    },
-  };
-
-  // Initialize the FirebaseUI widget using Firebase
-  const ui = new firebaseui.auth.AuthUI(auth);
-*/
-  /*
   // ...
-  // Called when the user clicks the RSVP button
-  startRsvpButton.addEventListener('click', () => {
-    if (auth.currentUser) {
-      // User is signed in; allows user to sign out
-      signOut(auth);
-    } else {
-      // No user is signed in; allows user to sign in
-      ui.start('#firebaseui-auth-container', uiConfig);
-    }
-  });
-*/
-  // ...
-  // Called when the user clicks the RSVP button
+  // Called when the user clicks the SignUp button
   signUpButton.addEventListener('click', () => {
     if (auth.currentUser) {
       // User is signed in; allows user to sign out
-      signOut(auth);
+      //signOut(auth);
     } else {
       // No user is signed in; allows user to sign in
       // ui.start('#firebaseui-auth-container', uiConfig);
@@ -107,6 +75,35 @@ async function main() {
     }
   });
 
+  // ...
+  // Called when the user clicks the SignIn button
+  signInButton.addEventListener('click', () => {
+    if (auth.currentUser) {
+      // User is signed in; allows user to sign out
+      //signOut(auth);
+    } else {
+      // No user is signed in; allows user to sign in
+      // ui.start('#firebaseui-auth-container', uiConfig);
+      signInWithPopup(auth, provider);
+    }
+  });
+
+  // Called when the user clicks the RSVP button
+  signOutButton.addEventListener('click', () => auth.signOut());
+
+  /**
+signInWithPopup(auth, provider): Это функция из Firebase SDK, которая запускает процесс аутентификации с использованием всплывающего окна для выбранного провайдера. auth - это объект Firebase Authentication, который обычно инициализируется с помощью firebase.auth(). provider - это объект, представляющий провайдера аутентификации (например, GoogleAuthProvider, FacebookAuthProvider и т. д.).
+
+.then((result) => { ... }): Это метод Promise, который вызывается, когда аутентификация успешно завершается. result содержит информацию о результате аутентификации, такую как данные пользователя и токен доступа.
+
+const credential = GoogleAuthProvider.credentialFromResult(result);: Здесь из результата аутентификации (result) извлекается учетная запись (credentials) Google, используя метод credentialFromResult, чтобы получить доступ к Google API. Это может быть использовано, например, для выполнения запросов к API Google от имени пользователя.
+
+const token = credential.accessToken;: Здесь извлекается токен доступа (access token) из учетных данных (credentials), полученных от провайдера Google. Токен доступа может быть использован для выполнения безопасных запросов к API, требующим аутентификации.
+
+const user = result.user;: Здесь из результата аутентификации (result) извлекается информация о зарегистрированном пользователе (user). Это может содержать информацию, такую как имя пользователя, электронная почта, идентификатор пользователя и другие данные, предоставленные провайдером аутентификации.
+
+// IdP data available using getAdditionalUserInfo(result): Это закомментированная строка кода, которая указывает на возможность получения дополнительной информации о провайдере идентификации (Identity Provider) с использованием метода getAdditionalUserInfo(result). Например, это может содержать дополнительные данные о пользователе, предоставленные провайдером аутентификации.
+ */
   signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -114,6 +111,9 @@ async function main() {
       const token = credential.accessToken;
       // The signed-in user info.
       const user = result.user;
+      //console.log(user.displayName + '' + user.email);
+      userName.textContent = user.displayName + ' -> ' + user.email;
+
       // IdP data available using getAdditionalUserInfo(result)
       // ...
     })
@@ -128,79 +128,20 @@ async function main() {
       // ...
     });
 
-
   // Обработчик события для отслеживания состояния входа/выхода пользователя
   onAuthStateChanged(auth, (user) => {
-    console.log(user)
     if (user) {
       // Пользователь вошел, скрываем форму входа и отображаем кнопку выхода
+      signUpButton.style.display = 'none';
       signInButton.style.display = 'none';
       signOutButton.style.display = 'block';
     } else {
       // Пользователь вышел, скрываем кнопку выхода и отображаем форму входа
+      signUpButton.style.display = 'block';
       signInButton.style.display = 'block';
       signOutButton.style.display = 'none';
     }
   });
 
-  /*
-  // Listen to the form submission
-  form.addEventListener('submit', async (e) => {
-    // Prevent the default form redirect
-    e.preventDefault();
-    // Write a new message to the database collection "guestbook"
-    addDoc(collection(db, 'guestbook'), {
-      text: input.value,
-      timestamp: Date.now(),
-      name: auth.currentUser.displayName,
-      userId: auth.currentUser.uid,
-    });
-    // clear message input field
-    input.value = '';
-    // Return false to avoid redirect
-    return false;
-  });
-
-  // Create query for messages
-  const q = query(collection(db, 'guestbook'), orderBy('timestamp', 'desc'));
-  onSnapshot(q, (snaps) => {
-    // Reset page
-    guestbook.innerHTML = '';
-    // Loop through documents in database
-    snaps.forEach((doc) => {
-      // Create an HTML entry for each document and add it to the chat
-      const entry = document.createElement('p');
-      entry.textContent = doc.data().name + ': ' + doc.data().text;
-      guestbook.appendChild(entry);
-    });
-  });
-
-  // ...
-  // Listen to guestbook updates
-  function subscribeGuestbook() {
-    const q = query(collection(db, 'guestbook'), orderBy('timestamp', 'desc'));
-    guestbookListener = onSnapshot(q, (snaps) => {
-      // Reset page
-      guestbook.innerHTML = '';
-      // Loop through documents in database
-      snaps.forEach((doc) => {
-        // Create an HTML entry for each document and add it to the chat
-        const entry = document.createElement('p');
-        entry.textContent = doc.data().name + ': ' + doc.data().text;
-        guestbook.appendChild(entry);
-      });
-    });
-  }
-
-  // ...
-  // Unsubscribe from guestbook updates
-  function unsubscribeGuestbook() {
-    if (guestbookListener != null) {
-      guestbookListener();
-      guestbookListener = null;
-    }
-  }
-
-  */
 }
 main();
