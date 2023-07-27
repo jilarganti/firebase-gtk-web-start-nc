@@ -30,13 +30,10 @@ import firebaseui from 'firebaseui';
 const signUpButton = document.getElementById('signUp');
 const signInButton = document.getElementById('signIn');
 const signOutButton = document.getElementById('signOut');
-//const guestbookContainer = document.getElementById('guestbook-container');
-//const form = document.getElementById('leave-message');
+const startMeetingButton = document.getElementById('startMeeting');
+const joinMeeting = document.getElementById('signOut');
 const userName = document.getElementById('userName');
-//const guestbook = document.getElementById('guestbook');
-//const numberAttending = document.getElementById('number-attending');
-//const rsvpYes = document.getElementById('rsvp-yes');
-//const rsvpNo = document.getElementById('rsvp-no');
+
 
 //let rsvpListener = null;
 let guestbookListener = null;
@@ -130,14 +127,13 @@ const user = result.user;: Здесь из результата аутентиф
 
   // Обработчик события для отслеживания состояния входа/выхода пользователя
   onAuthStateChanged(auth, (user) => {
+    signUpButton.style.display = 'none';
     if (user) {
       // Пользователь вошел, скрываем форму входа и отображаем кнопку выхода
-      signUpButton.style.display = 'none';
       signInButton.style.display = 'none';
       signOutButton.style.display = 'block';
     } else {
       // Пользователь вышел, скрываем кнопку выхода и отображаем форму входа
-      signUpButton.style.display = 'block';
       signInButton.style.display = 'block';
       signOutButton.style.display = 'none';
     }
