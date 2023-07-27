@@ -1,6 +1,7 @@
 
 // Import stylesheets
 import './style.css';
+import { showAccountPage } from './account.js';
 // Firebase App (the core Firebase SDK) is always required
 import { initializeApp } from 'firebase/app';
 
@@ -31,7 +32,7 @@ const signUpButton = document.getElementById('signUp');
 const signInButton = document.getElementById('signIn');
 const signOutButton = document.getElementById('signOut');
 const startMeetingButton = document.getElementById('startMeeting');
-const joinMeeting = document.getElementById('signOut');
+const joinMeeting = document.getElementById('joinMeeting');
 const userName = document.getElementById('userName');
 
 
@@ -110,6 +111,7 @@ const user = result.user;: Здесь из результата аутентиф
       const user = result.user;
       //console.log(user.displayName + '' + user.email);
       userName.textContent = user.displayName + ' -> ' + user.email;
+      showAccountPage();
 
       // IdP data available using getAdditionalUserInfo(result)
       // ...
@@ -131,10 +133,14 @@ const user = result.user;: Здесь из результата аутентиф
     if (user) {
       // Пользователь вошел, скрываем форму входа и отображаем кнопку выхода
       signInButton.style.display = 'none';
+      startMeetingButton.style.display = 'none';
+      joinMeeting.style.display = 'none';
       signOutButton.style.display = 'block';
     } else {
       // Пользователь вышел, скрываем кнопку выхода и отображаем форму входа
       signInButton.style.display = 'block';
+      startMeetingButton.style.display = 'block';
+      joinMeeting.style.display = 'block';
       signOutButton.style.display = 'none';
     }
   });
